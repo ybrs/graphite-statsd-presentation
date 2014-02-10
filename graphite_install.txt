@@ -1,0 +1,42 @@
+sudo -s
+apt-get update
+apt-get install -y build-essential git libcairo2 libcairo2-dev memcached nodejs pkg-config python-cairo python-dev python-pip sqlite3 supervisor npm screen vim
+#
+pip install -r requirements.txt
+#
+cp -f /opt/graphite/conf/carbon.conf.example /opt/graphite/conf/carbon.conf
+cp -f /opt/graphite/webapp/graphite/local_settings.py.example /opt/graphite/webapp/graphite/local_settings.py
+cp -f /opt/graphite/conf/storage.schemas.conf.example /opt/graphite/conf/storage.schemas.conf
+cp -f /opt/graphite/conf/storage.aggregation.conf.example /opt/graphite/conf/storage.aggregation.conf
+
+mkdir -p /opt/graphite/storage/log/webapp
+#
+cd /opt/graphite/conf
+
+start editing configs...
+
+edit carbon.conf for ports
+edit storage.schemas.conf for schema
+    make default retentions as high as possible, retentions = 1s:6h,1m:7d,10m:1y
+
+edit storage.aggregation
+    [default_average]
+    pattern = .*
+    xFilesFactor = 0.0 # this is important !!!!
+    aggregationMethod = average
+
+cd ..
+
+# run
+    ./bin/carbon-cache.py --debug start
+# web interface
+    cd /opt/graphite/webapp/graphite
+    python manage.py syncdb --noinput
+    python manage.py runserver 0.0.0.0:8000
+
+
+# install logster
+apt-get install logcheck
+git clone git@github.com:etsy/logster.git
+cd logster
+python setup.py develop

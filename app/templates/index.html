@@ -1,0 +1,36 @@
+
+<html>
+<head>
+    <title>hello....</title>
+</head>
+<body style="">
+    <div style="float:right; width:200px;">
+        latest users :
+        <ul>
+        {% for user in latest_users %}
+           <li> {{user.name}} </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div style="width:500px">
+    {% block content %}
+        {% for article in articles %}
+            <h3>
+                <a href="/show/{{article.permalink}}">
+                {{article.title}}
+                </a>
+
+            </h3>
+            <p>
+                {{article.excerpt}}
+            </p>
+            <p>
+                user: {{article.user.name}}
+            </p>
+            <hr>
+            <br>
+        {% endfor %}
+    {% endblock %}
+    </div>
+</body>
+</html>
